@@ -1,228 +1,273 @@
 <?php
+
 /**
- * @package 2HivePlugin
+ * @package 2Hive
  * @version 1.0
  */
-/*
-Plugin Name: 2HivePlugin
-Plugin URI: 2HivePlugin
-Description: 2HivePlugin
-Author: Dmitriev Sergei
-Version: 1.0
-Author URI: 2HivePlugin
-*/
 
-function hive_send($post_ID, $content, $type) {
+/**
+ * Plugin Name: 2Hive
+ * Plugin URI: http://2hive.org
+ * Description: 2Hive
+ * Author: 2Hive Team
+ * Description: To get started: 1) Click the "Activate" link to the left of this description, 2) <a href="http://2hive.org/project/account" target="_blank">Get 2Hive API Key in your Account Page</a>, and 3) Go to your 2Hive configuration page, and save your API key.
+ * Version: 1.0
+ */
 
-  $data = array(array('id' => $post_ID,
-                'type' => $type,
-                'content' => array(array('text' => $content)),
-                'lang' => ''));
+const Plugin2HiveURL = 'http://2hive.org/api';
 
-  $data = json_encode($data);
+function hive_send($contentId, $content, $type)
+{
+    $apiKey = get_option('hive_api_key');
 
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_HEADER, 0);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-  curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
-  $url = "http://2hive.org/api/?apikey=3f511380897e43d7b8ac6a14c59723b3";
-  curl_setopt($ch, CURLOPT_POST, 1);
-  curl_setopt($ch, CURLOPT_POSTFIELDS, "data=".$data);
-  curl_setopt($ch, CURLOPT_URL, $url);
-  $result = curl_exec($ch);
-  curl_close($ch);
+    if (!trim($apiKey)) {
+        /**
+         * Add Error Handling here...
+         */
+        return false;
+    }
 
-  $json = json_decode($result, true);
+    $url = Plugin2HiveURL . "/?apikey={$apiKey}";
 
-  if($json['status']['code'] == 200) {
+    $data = array(
+        array(
+            'id'      => $contentId,
+            'type'    => $type,
+            'content' => array(array('text' => $content)),
+            'lang'    => ''
+        )
+    );
 
-    foreach($json['response'] as $response) {
+    $data = json_encode($data);
 
-      if($response['status'] == 'disallow') {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
 
-        if($response['type'] == 'new_post') {
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "data=" . $data);
 
-          wp_delete_post($response['id']);
+    curl_setopt($ch, CURLOPT_URL, $url);
 
-        } elseif($response['type'] == 'new_comment') {
+    $result = curl_exec($ch);
 
-          wp_delete_comment($response['id']);
+    curl_close($ch);
+
+    $json = json_decode($result, true);
+
+    if ($json['status']['code'] == 200) {
+
+        foreach ($json['response'] as $response) {
+
+            if ($response['status'] == 'disallow') {
+
+                if ($response['type'] == 'new_post') {
+
+                    wp_delete_post($response['id']);
+
+                } elseif ($response['type'] == 'new_comment') {
+
+                    wp_delete_comment($response['id']);
+
+                }
+
+            }
 
         }
 
-      }
+    } else {
+        /**
+         * Add Error Handling here...
+         */
+    }
+}
 
+function hive_admin()
+{
+    add_options_page('2Hive', '2Hive', 8, 'hive', 'hive_options_page');
+}
+
+function hive_save_options()
+{
+    if (isset($_POST['hive_send_posts'])) {
+        $hive_send_posts = 1;
+    } else {
+        $hive_send_posts = 0;
     }
 
-  }
+    if (isset($_POST['hive_send_comments'])) {
+        $hive_send_comments = 1;
+    } else {
+        $hive_send_comments = 0;
+    }
+
+    if (isset($_POST['hive_api_key'])) {
+        $hive_api_key = $_POST['hive_api_key'];
+    } else {
+        $hive_api_key = '';
+    }
+
+    update_option('hive_send_posts', $hive_send_posts);
+    update_option('hive_send_comments', $hive_send_comments);
+    update_option('hive_api_key', $hive_api_key);
+}
+
+function hive_options_page()
+{
+    add_option('hive_send_posts', 1);
+    add_option('hive_send_comments', 1);
+    add_option('hive_api_key', '');
+
+    if (get_option('hive_send_posts') == 1) {
+        $checked_1 = ' checked="checked"';
+    }
+    if (get_option('hive_send_comments') == 1) {
+        $checked_2 = ' checked="checked"';
+    }
+
+    $apiKey = get_option('hive_api_key');
+
+    echo <<<PluginSettingsHTML
+
+    <br/>
+    <img src="http://2hive.org/images/2hive_logo_slogan_1024.png" style="height:85px" />
+    <br/><br/><br/>
+    <form method="post" name="hive_save_options" action="{$_SERVER["PHP_SELF"]}?page=hive&amp;updated=true">
+        <table class="form-table">
+        <tbody>
+        <tr>
+            <th scope="row"><label for="hive_api_key_input_id">API Key</label><br/></th>
+            <td>
+                <input style="width:19em" name="hive_api_key" type="text" value="{$apiKey}" id="hive_api_key_input_id" />
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">General Settings</th>
+            <td>
+                <input name="hive_send_posts" type="checkbox"{$checked_1} id="hive_send_posts_input_id" />
+                <label for="hive_send_posts_input_id">Send posts</label>
+                <br/>
+                <input name="hive_send_comments" type="checkbox"{$checked_2} id="hive_send_comments_input_id" />
+                <label for="hive_send_comments_input_id">Send comments</label>
+            </td>
+        </tr>
+        </tbody>
+        </table>
+        <br/>
+        <p class="submit">
+            <input type="submit" name="hive_save" class="button button-primary" value="Save Changes" />
+        </p>
+    </form>
+PluginSettingsHTML;
+}
+
+/**
+ * Settings
+ */
+
+if (isset($_POST['hive_save'])) {
+
+    hive_save_options();
 
 }
 
-function hive_admin() {
+function hive_send_data_post($post_ID)
+{
+    $post = get_post($post_ID);
 
-  add_options_page('2HivePlugin', '2HivePlugin', 8, 'hive', 'hive_options_page');
+    if (get_option('hive_send_posts') == 1) {
+        $contentId = "post_id_{$post_ID}";
+        hive_send($contentId, $post->post_content, 'new_post');
+    }
+}
+function hive_send_data_comment($comment_ID)
+{
+    $comment = get_comment($comment_ID);
 
+    if (get_option('hive_send_comments') == 1) {
+        $contentId = "comment_id_{$comment_ID}";
+        hive_send($contentId, $comment->comment_content, 'new_comment');
+    }
 }
 
-function hive_save_options() {
-
-  if(isset($_POST['hive_send_posts'])) {
-
-    $hive_send_posts = 1;
-
-  } else {
-
-    $hive_send_posts = 0;
-
-  }
-
-  if(isset($_POST['hive_send_comments'])) {
-
-    $hive_send_comments = 1;
-
-  } else {
-
-    $hive_send_comments = 0;
-
-  }
-
-  update_option('hive_send_posts', $hive_send_posts);
-  update_option('hive_send_comments', $hive_send_comments);
-
-}
-
-function hive_options_page() {
-
-  add_option('hive_send_posts', '1');
-  add_option('hive_send_comments', '1');
-
-  if(get_option('hive_send_posts') == 1) {
-
-    $checked_1 = ' checked="checked"';
-
-  }
-
-  if(get_option('hive_send_comments') == 1) {
-
-    $checked_2 = ' checked="checked"';
-
-  }
-
-  echo '<h3>Настройки плагина 2HivePlugin</h3>';
-
-  echo '<form method="post" name="hive_save_options" action="'.$_SERVER["PHP_SELF"].'?page=hive&amp;updated=true">
-          <table>
-            <tr>
-              <td><input name="hive_send_posts" type="checkbox"'.$checked_1.'></td>
-              <td>Send posts</td>
-            </tr>
-            <tr>
-              <td><input name="hive_send_comments" type="checkbox"'.$checked_2.'></td>
-              <td>Send comments</td>
-            </tr>
-            <tr>
-              <td colspan="2"><input type="submit" name="hive_save" value="Сохранить"></td>
-            </tr>
-          </table>
-        </form>';
-
-}
-
-if(isset($_POST['hive_save'])) {
-
-  hive_save_options();
-
-}
-
-function hive_send_data_post($post_ID) {
-
-  $post = get_post($post_ID);
-
-  if(get_option('hive_send_posts') == 1) {
-
-    hive_send($post_ID, $post->post_content, 'new_post');
-
-  }
-
-}
-
-function hive_send_data_comment($comment_ID) {
-
-  $comment = get_comment($comment_ID);
-
-  if(get_option('hive_send_comments') == 1) {
-
-    hive_send($comment_ID, $comment->comment_content, 'new_comment');
-
-  }
-
-}
+/**
+ * CRON JOB
+ */
 
 add_filter('cron_schedules', 'cron_add_minute');
 
-function cron_add_minute($schedules) {
+function cron_add_minute($schedules)
+{
+    $schedules['minute'] = array(
+        'interval' => 60,
+        'display' => __('Once minute')
+    );
+    return $schedules;
+}
 
-	$schedules['minute'] = array(
-		'interval' => 60,
-		'display' => __('Once minute')
-	);
-	return $schedules;
+if (!wp_next_scheduled('hive_task_hook')) {
+
+    wp_schedule_event(time(), 'minute', 'hive_task_hook');
 
 }
 
-if(!wp_next_scheduled('hive_task_hook')) {
+function hive_task_function()
+{
+    $apiKey = get_option('hive_api_key');
 
-  wp_schedule_event(time(), 'minute', 'hive_task_hook');
+    if (!trim($apiKey)) {
+        /**
+         * Add Error Handling here...
+         */
+        return false;
+    }
 
-}
+    $url = Plugin2HiveURL . "/?apikey={$apiKey}";
 
-function hive_task_function() {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
 
-  //$data = array();
+    curl_setopt($ch, CURLOPT_URL, $url);
 
-  //$data = json_encode($data);
+    $result = curl_exec($ch);
+    curl_close($ch);
 
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_HEADER, 0);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-  curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
-  $url = "http://2hive.org/api/?apikey=3f511380897e43d7b8ac6a14c59723b3";
-  //curl_setopt($ch, CURLOPT_POST, 1);
-  //curl_setopt($ch, CURLOPT_POSTFIELDS, "data=".$data);
-  curl_setopt($ch, CURLOPT_URL, $url);
-  $result = curl_exec($ch);
-  curl_close($ch);
+    $json = json_decode($result, true);
 
-  $json = json_decode($result, true);
+    if ($json['status']['code'] == 200) {
 
-  if($json['status']['code'] == 200) {
+        foreach ($json['response'] as $response) {
 
-    foreach($json['response'] as $response) {
+            if ($response['status'] == 'disallow') {
 
-      if($response['status'] == 'disallow') {
+                if ($response['type'] == 'new_post') {
 
-        if($response['type'] == 'new_post') {
+                    wp_delete_post($response['id']);
 
-          wp_delete_post($response['id']);
+                } elseif ($response['type'] == 'new_comment') {
 
-        } elseif($response['type'] == 'new_comment') {
+                    wp_delete_comment($response['id']);
 
-          wp_delete_comment($response['id']);
+                }
+
+            }
 
         }
 
-      }
-
+    } else {
+        /**
+         * Add Error Handling here...
+         */
     }
-
-  }
-
 }
 
 add_action('admin_menu', 'hive_admin');
