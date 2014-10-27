@@ -8,7 +8,6 @@
 /**
  * Plugin Name: 2Hive
  * Plugin URI: http://2hive.org
- * Description: 2Hive
  * Author: 2Hive Team
  * Description: To get started: 1) Click the "Activate" link to the left of this description, 2) <a href="http://2hive.org/project/account" target="_blank">Get 2Hive API Key in your Account Page</a>, and 3) Go to your 2Hive configuration page, and save your API key.
  * Version: 1.0
