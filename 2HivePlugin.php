@@ -9,8 +9,10 @@
  * Plugin Name: 2Hive
  * Plugin URI: http://2hive.org
  * Author: 2Hive Team
- * Description: To get started: 1) Click the "Activate" link to the left of this description, 2) <a href="http://2hive.org/project/account" target="_blank">Get 2Hive API Key in your Account Page</a>, and 3) Go to your 2Hive configuration page, and save your API key.
+ * Author URI: http://2hive.org
+ * Description: To get started: 1) Click the "Activate" link to the left of this description, 2) <a href="http://2hive.org/project/account" target="_blank">Get your 2Hive API Key in your Account Page</a>, and 3) Go to your 2Hive configuration page, and save your API key.
  * Version: 1.0
+ * License: A "Slug" license name e.g. GPL2
  */
 
 const Plugin2HiveURL = 'http://2hive.org/api';
@@ -87,7 +89,7 @@ function hive_send($contentId, $content, $type)
 
 function hive_admin()
 {
-    add_options_page('2Hive', '2Hive', 8, 'hive', 'hive_options_page');
+    add_options_page('2Hive', '2Hive', 8, '2hive', 'hive_options_page');
 }
 
 function hive_save_options()
