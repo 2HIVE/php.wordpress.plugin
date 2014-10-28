@@ -1,4 +1,5 @@
 === 2Hive ===
+Contributors: 2hive
 Tags: content moderation, 2hive
 Requires at least: 3.0.1
 Tested up to: 4.0
@@ -19,8 +20,8 @@ Features:
 4. High quality
 
 == Installation ==
-1. Upload \"2HivePlugin.php\" to the \"/wp-content/plugins/\" directory.
-2. Activate the plugin through the \"Plugins\" menu in WordPress.
+1. Upload "2HivePlugin.php" to the "/wp-content/plugins/" directory.
+2. Activate the plugin through the "Plugins" menu in WordPress.
 3. Get your 2Hive API Key in your Account Page: http://2hive.org/project/account
 4. Go to your 2Hive configuration page, and save your API key
 
@@ -38,8 +39,6 @@ Please create a Moderation rule with Type=new_post
 Please create a Moderation rule with Type=new_comment
 
 == Changelog ==
-= 2.0 =
-* callback_url added
-* callback or cron settings added
+
 = 1.0 =
 * Initial release.
