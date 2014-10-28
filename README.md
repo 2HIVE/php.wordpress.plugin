@@ -23,14 +23,14 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 ## FAQ
 
-* How do I get an API Key
-* Please register at http://2hive.org/project/signup (skip if you have an account). Go to your Account Page: http://2hive.org/project/account
+Q: How do I get an API Key
+A: Please register at http://2hive.org/project/signup (skip if you have an account). Go to your Account Page: http://2hive.org/project/account
 
-* How do I control Moderation Rules?
-* Please define rules in http://2hive.org/project/rules.
+Q: How do I control Moderation Rules?
+A: Please define rules in http://2hive.org/project/rules.
 
-* What Moderation Rules for new posts?
-* Please create a Moderation rule with Type=new_post
+Q: What Moderation Rules for new posts?
+A: Please create a Moderation rule with Type=new_post
 
-* What Moderation Rules for new comments?
-* Please create a Moderation rule with Type=new_comment
+Q: What Moderation Rules for new comments?
+A: Please create a Moderation rule with Type=new_comment
