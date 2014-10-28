@@ -14,7 +14,7 @@
 1. Upload "2HivePlugin.php" to the "/wp-content/plugins/" directory.
 2. Activate the plugin through the "Plugins" menu in WordPress.
 3. Get your 2Hive API Key in your Account Page: http://2hive.org/project/account
-4. Go to your 2Hive configuration page, and save your API key
+4. Go to your 2Hive Plugin configuration page, and save your API key
 
 ## License
 

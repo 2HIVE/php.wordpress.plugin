@@ -10,7 +10,7 @@
  * Plugin URI: http://2hive.org
  * Author: 2Hive Team
  * Author URI: http://2hive.org
- * Description: To get started: 1) Click the "Activate" link to the left of this description, 2) <a href="http://2hive.org/project/account" target="_blank">Get your 2Hive API Key in your Account Page</a>, and 3) Go to your 2Hive configuration page, and save your API key.
+ * Description: To get started: 1) Click the "Activate" link to the left of this description, 2) <a href="http://2hive.org/project/account" target="_blank">Get your 2Hive API Key in your Account Page</a>, and 3) Go to your 22Hive Plugin configuration page, and save your API key.
  * Version: 1.0
  * License: A "Slug" license name e.g. GPL2
  */
