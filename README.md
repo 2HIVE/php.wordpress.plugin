@@ -37,9 +37,11 @@ A: Please create a Moderation rule with Type=new_post
 Q: What Moderation Rules for new comments? <br/>
 A: Please create a Moderation rule with Type=new_comment
 
-Q: Что такое 2Hive Moderation Team
+Q: What is 2Hive Moderation Team? <br/>
+A: 2Hive Moderation Team is high skilled Moderators. You can use them through 2Hive Service.
 
-Q: Могу я модерировать контент самостоятельно
+Q: Is it possible to moderate content by my own, i.e. without 2Hive Team? <br/>
+A: Yes, this is possible!
 
-Q: Сколько стоит использование этого сервиса?
-
+Q: How much does it cost to use 2Hive Service?<br/>
+A: Please see our pricing table chart: http://2hive.org/static/projects/pricing
