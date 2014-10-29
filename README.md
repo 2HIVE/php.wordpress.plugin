@@ -7,7 +7,6 @@
 1. Easy installation
 2. Transparent integration with 2Hive
 3. Flexible settings
-4. High quality
 
 ## Installation
 
