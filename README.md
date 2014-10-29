@@ -1,6 +1,6 @@
 ## Description
 
-2Hive WordPress performs posts and comments moderation through 2Hive Content Moderation Service. After activation it will automatically send new posts and comments to the service and will remove (archive) ones automatically in case of inappropriate content.
+2Hive WordPress performs posts and comments moderation through 2Hive Content Moderation Service. After activation it will automatically send new posts and comments to the 2Hive and will remove (archive) ones automatically in case of inappropriate content was detected by 2Hive.
 
 ## Features
 
@@ -15,6 +15,8 @@
 3. Get your 2Hive API Key in your Account Page: http://2hive.org/project/account
 4. Go to your 2Hive Plugin configuration page, and save your API key
 5. Go to 2Hive http://2hive.org/project/rules and create new rules with types: "new_comment" and "new_post"
+6. Go to http://2hive.org/project/moderators and invite your moderators or enable 2Hive Moderation Team.
+7. You service under protect 24X7! 
 
 ## License
 
@@ -34,4 +36,10 @@ A: Please create a Moderation rule with Type=new_post
 
 Q: What Moderation Rules for new comments? <br/>
 A: Please create a Moderation rule with Type=new_comment
+
+Q: Что такое 2Hive Moderation Team
+
+Q: Могу я модерировать контент самостоятельно
+
+Q: Сколько стоит использование этого сервиса?
 
